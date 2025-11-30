@@ -16,7 +16,7 @@
         style="cursor: pointer"
       >
         <td>{{ review.name }}</td>
-        <td>{{ formatDate(review.date) }}</td>
+        <td>{{ review.date }}</td>
         <td>{{ review.technologies.join(', ') }}</td>
         <td>{{ review.rating }}</td>
       </tr>
@@ -25,14 +25,7 @@
 </template>
 
 <script setup>
-defineProps(['reviews'])
+const props = defineProps(['reviews'])
 const emit = defineEmits(['select'])
-const select = (review) => {
-  emit('select', review); // ✅ передаётся оригинальный объект
-};
 
-const formatDate = (dateStr) => {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('ru-RU')
-}
 </script>

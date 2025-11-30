@@ -1,7 +1,7 @@
 <template>
     <div class = "full-review">
         <p><strong>Имя:</strong> {{ review.name }}</p>
-        <p><strong>Дата рождения:</strong> {{review.Date }}</p>
+        <p><strong>Дата рождения:</strong> {{review.date }}</p>
         <p><strong>Телефон:</strong> {{ review.phone }}</p>
         <p><strong>Email:</strong> {{ review.email }}</p>
         <p><strong>Изучаемые технологии:</strong> {{ review.technologies.join(', ') }}</p>

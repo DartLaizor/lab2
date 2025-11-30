@@ -80,50 +80,82 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ReviewList from './components/ReviewList.vue'
 import ReviewDetail from './components/ReviewFull.vue'
 import StarRating from 'vue-star-rating'
 
+// Реактивные данные
 const reviews = ref([])
-
 const selectedReview = ref(null)
-const toggleReview = (review) => {
-  if (selectedReview.value === review) {
-    selectedReview.value = null;
-  } else {
-    selectedReview.value = review;
-  }
-};
-
 const newReview = ref({
   name: "",
   date: "",
   phone: "",
   email: "",
   technologies: [],
-  rating: 0, 
+  rating: 0,
   comment: ""
 })
 
-const averageRating = computed( ()=>{
-  if (reviews.value.length === 0 ) return 0
-  return reviews.value.reduce((sum,r) => sum + r.rating,0) / reviews.value.length
+// Вычисляемая средняя оценка
+const averageRating = computed(() => {
+  if (reviews.value.length === 0) return 0
+  return (reviews.value.reduce((sum, r) => sum + r.rating, 0) / reviews.value.length)
 })
 
-const addReview = () =>{
-  reviews.value.push({ ...newReview.value})
-  newReview.value = {
-    name: "",
-    birthDate: "",
-    phone: "",
-    email: "",
-    technologies: [],
-    rating: 0,
-    comment: ""
+// Загрузка всех отзывов
+const loadReviews = async () => {
+  try {
+    const res = await fetch('http://localhost:8082/send')
+    if (!res.ok) throw new Error('Не удалось загрузить отзывы')
+    reviews.value = await res.json()
+  } catch (err) {
+    console.error('Ошибка загрузки:', err)
+    alert('Не удалось загрузить отзывы')
   }
-  selectedReview.value = null
 }
+
+// Добавление отзыва
+const addReview = async () => {
+  try {
+    const res = await fetch('http://localhost:8082/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newReview.value)
+    })
+
+    if (!res.ok) {
+      const err = await res.text().catch(() => 'Неизвестная ошибка')
+      throw new Error(err)
+    }
+
+  
+    await loadReviews()
+    newReview.value = {
+      name: "",
+      date: "",
+      phone: "",
+      email: "",
+      technologies: [],
+      rating: 0,
+      comment: ""
+    }
+    selectedReview.value = null
+  } catch (err) {
+    console.error('Ошибка отправки:', err)
+    alert('Не удалось отправить отзыв: ' + err.message)
+  }
+}
+
+const toggleReview = (review) => {
+  selectedReview.value = selectedReview.value === review ? null : review
+}
+
+
+onMounted(() => {
+  loadReviews()
+})
 </script>
 
 <style>
