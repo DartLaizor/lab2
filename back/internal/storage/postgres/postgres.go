@@ -32,7 +32,7 @@ func NewStorage(storagePath string) (*Storage, error) {
 		`		CREATE TABLE IF NOT EXISTS reviews (
 			id SERIAL PRIMARY KEY,
 			name TEXT NOT NULL,
-			date DATE NOT NULL,
+			date TEXT NOT NULL,
 			phone TEXT,
 			email TEXT,
 			technologies TEXT[],
@@ -86,6 +86,7 @@ func (s *Storage) GetReviews() ([]storage.Review, error) {
 	defer rows.Close()
 
 	var reviews []storage.Review
+
 	for rows.Next() {
 		var r storage.Review
 		err := rows.Scan(

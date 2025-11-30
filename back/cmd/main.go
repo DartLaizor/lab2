@@ -15,7 +15,7 @@ import (
 	"github.com/go-chi/cors"
 
 	"server/internal/config"
-	savereview "server/internal/http-server/handlers/getReview"
+	savereview "server/internal/http-server/handlers/saveReview"
 	sendreview "server/internal/http-server/handlers/sendReview"
 	mwLogger "server/internal/http-server/middleware/logger"
 	"server/internal/logger"
@@ -30,7 +30,7 @@ func main() {
 	log := logger.NewLogger(cfg.Env)
 	_ = log
 
-	storage, err := postgres.NewStorage(cfg.StoragePath)
+	db, err := postgres.NewStorage(cfg.StoragePath)
 
 	if err != nil {
 		log.Error("failed to init storage", sl.Err(err))
@@ -53,8 +53,8 @@ func main() {
 	}))
 	//*handlers
 
-	router.Get("/", sendreview.SendReviewsHandler(storage))
-	router.Post("/", savereview.SaveReviewsHadnler(storage))
+	router.Get("/send", sendreview.SendReviewsHandler(log,db))
+	router.Post("/save", savereview.SaveReviewsHadnler(log,db))
 	//TODO: run server
 	log.Info("starting server", slog.String("address", cfg.Address))
 
@@ -77,7 +77,7 @@ func main() {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	<-done
-	storage.CloseStorage()
+	db.CloseStorage()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

@@ -1,6 +1,8 @@
 package storage
 
-import "errors"
+import (
+	"errors"
+)
 
 type Review struct {
 	Name         string   `json:"name"`
@@ -13,7 +15,7 @@ type Review struct {
 }
 
 var (
-	ErrURLExists   = errors.New("url exists")
-	ErrURLNotFound = errors.New("url not found")
+	ErrURLExists      = errors.New("url exists")
+	ErrURLNotFound    = errors.New("url not found")
 	ErrAlisNotDeleted = errors.New("url not deleted")
 )
