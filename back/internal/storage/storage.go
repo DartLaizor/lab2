@@ -5,13 +5,13 @@ import (
 )
 
 type Review struct {
-	Name         string   `json:"name"`
-	Date         string   `json:"date"`
-	Phone        string   `json:"phone"`
-	Email        string   `json:"email"`
-	Technologies []string `json:"technologies"`
-	Rating       int      `json:"rating"`
-	Comment      string   `json:"comment"`
+	Name         string   `json:"name" validate:"required"`
+	Date         string   `json:"date" validate:"required"`
+	Phone        string   `json:"phone" validate:"required"`
+	Email        string   `json:"email" validate:"required,email"`
+	Technologies []string `json:"technologies" validate:"required,min=1"`
+	Rating       int      `json:"rating" validate:"required,min=0,max=9"`
+	Comment      string   `json:"comment" validate:"required"`
 }
 
 var (

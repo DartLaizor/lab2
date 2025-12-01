@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-playground/validator/v10"
 
 	"server/internal/logger/sl"
 	"server/internal/storage"
@@ -42,7 +43,21 @@ func SaveReviewsHadnler(log *slog.Logger, db ReviewsSaver) http.HandlerFunc {
 
 			return
 		}
+
+		if err := validator.New().Struct(review); err != nil {
+
+			log.Error("invalid request", sl.Err(err))
+
+			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+
+			return
+		}
 		err := db.SaveRewiev(review)
+		data, _ := json.MarshalIndent(review, "", "  ")
+		log.Info("Received review", slog.String("data", string(data)))
+
+
+
 		if err != nil {
 			log.Error("couldn't save to the DataBase", sl.Err(err))
 

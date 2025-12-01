@@ -18,7 +18,7 @@
       <div class="form-column">
         <div class="form-group">
           <label>Телефон</label>
-          <input v-model="newReview.phone" required placeholder="+7XXXXXXXXXX" />
+          <input v-model="newReview.phone" required placeholder="8XXXXXXXXXX" />
         </div>
 
         <div class="form-group">
