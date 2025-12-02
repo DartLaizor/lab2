@@ -56,8 +56,6 @@ func SaveReviewsHadnler(log *slog.Logger, db ReviewsSaver) http.HandlerFunc {
 		data, _ := json.MarshalIndent(review, "", "  ")
 		log.Info("Received review", slog.String("data", string(data)))
 
-
-
 		if err != nil {
 			log.Error("couldn't save to the DataBase", sl.Err(err))
 

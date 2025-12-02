@@ -44,14 +44,14 @@ func main() {
 	router.Use(mwLogger.New(log))
 
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
-		AllowedMethods:   []string{"GET", "POST"},
-		AllowedHeaders:   []string{"Content-Type"},
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST"},
+		AllowedHeaders: []string{"Content-Type"},
 	}))
 	//*handlers
 
-	router.Get("/send", sendreview.SendReviewsHandler(log,db))
-	router.Post("/save", savereview.SaveReviewsHadnler(log,db))
+	router.Get("/send", sendreview.SendReviewsHandler(log, db))
+	router.Post("/save", savereview.SaveReviewsHadnler(log, db))
 	//TODO: run server
 	log.Info("starting server", slog.String("address", cfg.Address))
 

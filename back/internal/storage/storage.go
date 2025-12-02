@@ -10,7 +10,7 @@ type Review struct {
 	Phone        string   `json:"phone" validate:"required"`
 	Email        string   `json:"email" validate:"required,email"`
 	Technologies []string `json:"technologies" validate:"required,min=1"`
-	Rating       int      `json:"rating" validate:"required,min=0,max=9"`
+	Rating       int      `json:"rating"`
 	Comment      string   `json:"comment" validate:"required"`
 }
 

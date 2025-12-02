@@ -85,7 +85,7 @@ import ReviewList from './components/ReviewList.vue'
 import ReviewDetail from './components/ReviewFull.vue'
 import StarRating from 'vue-star-rating'
 
-// Реактивные данные
+
 const reviews = ref([])
 const selectedReview = ref(null)
 const newReview = ref({
@@ -98,13 +98,13 @@ const newReview = ref({
   comment: ""
 })
 
-// Вычисляемая средняя оценка
+
 const averageRating = computed(() => {
   if (reviews.value.length === 0) return 0
   return (reviews.value.reduce((sum, r) => sum + r.rating, 0) / reviews.value.length)
 })
 
-// Загрузка всех отзывов
+
 const loadReviews = async () => {
   try {
     const res = await fetch('http://localhost:8082/send')
@@ -116,7 +116,7 @@ const loadReviews = async () => {
   }
 }
 
-// Добавление отзыва
+
 const addReview = async () => {
   try {
     const res = await fetch('http://localhost:8082/save', {
