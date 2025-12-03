@@ -72,7 +72,7 @@
 
     <p><strong>Средняя оценка сайта:</strong> {{ averageRating.toFixed(2) }}</p>
 
-    <ReviewList :reviews="reviews" @select="toggleReview" />
+    <ReviewList :reviews="reviews" :selectedReview="selectedReview" @select="toggleReview" />
 
     <ReviewDetail v-if="selectedReview" :review="selectedReview" />
 
@@ -156,6 +156,24 @@ const toggleReview = (review) => {
 onMounted(() => {
   loadReviews()
 })
+
+
+const validatePhone = (phone) => {
+  const trimmedPhone = phone.trim()
+  
+  if (!trimmedPhone) return 'Телефон обязателен'
+  
+
+  const cleanedPhone = trimmedPhone.replace(/\D/g, '')
+  
+
+  if (cleanedPhone.length !== 11) return 'Номер должен содержать 11 цифр'
+  
+
+  if (!/^[78]/.test(cleanedPhone)) return 'Номер должен начинаться с 8 или +7'
+  
+  return ''
+}
 </script>
 
 <style>
