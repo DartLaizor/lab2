@@ -3,29 +3,35 @@
     <thead>
       <tr>
         <th>Имя</th>
-        <th>Дата рождения</th>
+        <th>Дата</th>
         <th>Технологии</th>
         <th>Оценка</th>
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="(review, index) in reviews"
-        :key="index"
-        @click="emit('select', review)"
+        v-for="(r, i) in reviews"
+        :key="i"
+        @click="emit('select', r)"
+        :class="{ selected: r === selectedReview }"
         style="cursor: pointer"
       >
-        <td>{{ review.name }}</td>
-        <td>{{ review.date }}</td>
-        <td>{{ review.technologies.join(', ') }}</td>
-        <td>{{ review.rating }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.date }}</td>
+        <td>{{ r.technologies?.join(', ') }}</td>
+        <td>{{ r.rating }}</td>
       </tr>
     </tbody>
   </table>
 </template>
 
 <script setup>
-const props = defineProps(['reviews'])
+defineProps(['reviews', 'selectedReview'])
 const emit = defineEmits(['select'])
-
 </script>
+
+<style scoped>
+table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+.selected { background-color: #e0e0e0; }
+</style>
