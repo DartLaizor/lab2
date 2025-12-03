@@ -80,7 +80,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import ReviewList from './components/ReviewList.vue'
-import ReviewDetail from './components/ReviewDetail.vue'
 import StarRating from 'vue-star-rating'
 
 const reviews = ref([])
