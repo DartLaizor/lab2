@@ -13,6 +13,7 @@
         v-for="(review, index) in reviews"
         :key="index"
         @click="emit('select', review)"
+        :class="{selected: isSelected(review)}"
         style="cursor: pointer"
       >
         <td>{{ review.name }}</td>
@@ -25,7 +26,18 @@
 </template>
 
 <script setup>
-const props = defineProps(['reviews'])
+const props = defineProps(['reviews','selectedReview'] )
 const emit = defineEmits(['select'])
 
+const isSelected = (review)=>{
+  return props.selectedReview === review
+}
+
 </script>
+
+<style >
+.selected{
+  background-color: darkgrey;
+
+}
+</style>

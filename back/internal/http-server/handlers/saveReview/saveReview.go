@@ -64,11 +64,6 @@ func SaveReviewsHadnler(log *slog.Logger, db ReviewsSaver) http.HandlerFunc {
 			return
 		}
 
-		/* if review.Name == "" || review.Email!="" || review.Phone != "" || len(review.Technologies)!=0 || review.Date == "" || review.Rating < 0 || review.Rating > 9 {
-			http.Error(w, "Invalid data", http.StatusBadRequest)
-			return
-		} */
-
 		w.WriteHeader(http.StatusCreated)
 
 	}

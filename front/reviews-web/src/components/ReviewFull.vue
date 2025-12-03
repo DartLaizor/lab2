@@ -13,3 +13,14 @@
 <script setup>
 defineProps(['review'])
 </script>
+
+<style>
+.full-review{
+    margin-top: 20px;
+    border-color: gray;
+    border-radius: 2px;
+    border-style: solid;
+    font-size: 20px;
+    padding:10px
+}
+</style>
