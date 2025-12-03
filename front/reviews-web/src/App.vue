@@ -45,7 +45,7 @@
             v-model:rating="newReview.rating"
             :max-rating="9"
             :increment="1"
-            :star-size="24"
+            :star-size="36"
             :show-rating="true"
             :fixed-points="0"
             inactive-color="#ddd"
@@ -182,11 +182,13 @@ const validatePhone = (phone) => {
 
 .form-column{
   display: inline-block;
+
 }
 label {
   display: inline-block;
   width: 180px;
   vertical-align: top;
+  font-size: 30px;
 }
 button {
   margin-top: 10px;
@@ -207,5 +209,7 @@ th, td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
+  font-size: 20px;
 }
+
 </style>
