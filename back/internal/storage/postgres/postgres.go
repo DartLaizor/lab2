@@ -75,7 +75,7 @@ func (s *Storage) GetReviews() ([]storage.Review, error) {
 	rows, err := s.db.Query(context.Background(), `
 		SELECT name, date, phone, email, technologies, rating, comment
 		FROM reviews
-		ORDER BY id DESC
+		ORDER BY name
 	`)
 
 	if err != nil {

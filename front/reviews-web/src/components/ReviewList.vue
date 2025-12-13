@@ -31,7 +31,10 @@ const emit = defineEmits(['select'])
 </script>
 
 <style scoped>
-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+table { width: 100%;
+   border-collapse: collapse; margin-bottom: 1rem; }
+
 th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-.selected { background-color: #e0e0e0; }
+
+.selected { background-color: #0addac; }
 </style>
