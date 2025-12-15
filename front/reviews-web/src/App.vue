@@ -12,7 +12,15 @@
         <input type="date" v-model="form.date" :readonly="!!selectedReview" required>
       </label><br>
       <label>Телефон<br>
-        <input v-model="form.phone" :readonly="!!selectedReview" placeholder="89001234567" required>
+        <input
+        v-model="form.phone"
+        :readonly="!!selectedReview"
+        @input="isValidPhone"
+        @blur="isValidPhone"
+        placeholder="89001234567"
+        :class="{ 'invalid-phone': phoneError }"
+        required
+      />
       </label><br>
       <label>Email<br>
         <input v-model="form.email" :readonly="!!selectedReview" required>
@@ -74,14 +82,23 @@ const clearForm = () => {
 }
 
 
-const isValidPhone = (phone) => {
-  const digits = phone.replace(/\D/g, '')
-  return digits.length === 11 && (digits[0] === '7' || digits[0] === '8')
-}
+const phoneError = ref(false)
 
+const isValidPhone = () => {
+
+  const phone = form.value.phone.trim()
+
+  if (phone === '') {
+    phoneError.value = false
+    return false
+  }
+
+  const valid = /^[78]\d{10}$/.test(phone)
+  phoneError.value = !valid
+  return valid
+}
 const addReview = () => {
-  if (!isValidPhone(phone)) {
-    alert('Телефон должен быть в формате 89XXXXXXXXX')
+  if (!isValidPhone()) {
     return
   }
 
@@ -116,3 +133,10 @@ const loadReviews = () => {
 
 onMounted(loadReviews)
 </script>
+
+
+<style>
+  .invalid-phone {
+    color: red;
+  }
+</style>

@@ -32,11 +32,12 @@ func NewStorage(storagePath string) (*Storage, error) {
 			id SERIAL PRIMARY KEY,
 			name TEXT NOT NULL,
 			date TEXT NOT NULL,
-			phone TEXT NOT NULL,
-			email TEXT NOT NULL,
+			phone TEXT NOT NULL UNIQUE,
+			email TEXT NOT NULL UNIQUE,
 			technologies TEXT[] NOT NULL,
 			rating INT CHECK (rating BETWEEN 0 AND 9),
-			comment TEXT NOT NULL
+			comment TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
 	`)
 
