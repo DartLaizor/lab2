@@ -1,65 +1,40 @@
 <template>
   <div>
     <h2>Отзывы</h2>
-    <ReviewList :reviews="reviews" :selectedReview="selectedReview" @select="selectReview" />
+    <ReviewList 
+      :reviews="reviews" 
+      :selectedReview="selectedReview" 
+      @select="selectReview" 
+    />
 
     <h2>{{ selectedReview ? 'Просмотр отзыва' : 'Добавить новый отзыв' }}</h2>
-    <form @submit.prevent="addReview">
-      <label>Имя<br>
-        <input v-model="form.name" :readonly="!!selectedReview" required>
-      </label><br>
-      <label>Дата<br>
-        <input type="date" v-model="form.date" :readonly="!!selectedReview" required>
-      </label><br>
-      <label>Телефон<br>
-        <input
-        v-model="form.phone"
-        :readonly="!!selectedReview"
-        @input="isValidPhone"
-        @blur="isValidPhone"
-        placeholder="89001234567"
-        :class="{ 'invalid-phone': phoneError }"
-        required
-      />
-      </label><br>
-      <label>Email<br>
-        <input v-model="form.email" :readonly="!!selectedReview" required>
-      </label><br>
-
-      <label>Технологии:</label>
-      <label><input type="checkbox" v-model="form.technologies" value="HTML" :disabled="!!selectedReview"> HTML</label>
-      <label><input type="checkbox" v-model="form.technologies" value="CSS" :disabled="!!selectedReview"> CSS</label>
-      <label><input type="checkbox" v-model="form.technologies" value="JS" :disabled="!!selectedReview"> JS</label>
-      <label><input type="checkbox" v-model="form.technologies" value="С++" :disabled="!!selectedReview"> С++</label>
-      <label><input type="checkbox" v-model="form.technologies" value="С#" :disabled="!!selectedReview"> С#</label>
-      <label><input type="checkbox" v-model="form.technologies" value="Java" :disabled="!!selectedReview"> Java</label><br>
-
-      <label>Оценка:</label>
-      <star-rating v-model:rating="form.rating" :max-rating="9" :increment="1" :read-only="!!selectedReview" :star-size="20" />
-
-      <label>Комментарий<br>
-        <textarea v-model="form.comment" :readonly="!!selectedReview" maxlength="200" required></textarea>
-      </label>
-      <div>{{ 200 - form.comment.length }} символов</div><br>
-
-      <button type="button" v-if="selectedReview" @click="clearForm">Новый отзыв</button>
-      <button type="submit" v-else>Добавить</button>
-    </form>
+    
+    <ReviewForm
+      v-model="form"
+      :phone-error="phoneError"
+      @validate-phone="validatePhone"
+      @submit="addReview"
+      @clear="clearForm"
+    />
 
     <p><strong>Средний рейтинг:</strong> {{ averageRating.toFixed(2) }}</p>
+    
     <ReviewDetail v-if="selectedReview" :review="selectedReview" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import ReviewForm from './components/ReviewForm.vue'
 import ReviewList from './components/ReviewList.vue'
-import StarRating from 'vue-star-rating'
+
 
 const reviews = ref([])
 const selectedReview = ref(null)
+const phoneError = ref(false)
 
 const form = ref({
+  id: null,
   name: '',
   date: '',
   phone: '',
@@ -74,33 +49,18 @@ const averageRating = computed(() => {
   return reviews.value.length ? total / reviews.value.length : 0
 })
 
-
-
-const clearForm = () => {
-  selectedReview.value = null
-  form.value = { name: '', date: '', phone: '', email: '', technologies: [], rating: 0, comment: '' }
-}
-
-
-const phoneError = ref(false)
-
-const isValidPhone = () => {
-
-  const phone = form.value.phone.trim()
-
+const validatePhone = (phone) => {
   if (phone === '') {
     phoneError.value = false
-    return false
+    return true
   }
-
-  const valid = /^[78]\d{10}$/.test(phone)
+  const valid = /^[78]\d{10}$/.test(phone.trim())
   phoneError.value = !valid
   return valid
 }
+
 const addReview = () => {
-  if (!isValidPhone()) {
-    return
-  }
+  if (!validatePhone(form.value.phone)) return
 
   fetch('http://localhost:8082/save', {
     method: 'POST',
@@ -112,16 +72,30 @@ const addReview = () => {
         loadReviews()
         clearForm()
       } else {
-        throw new Error()
+        throw new Error('HTTP error')
       }
     })
     .catch(() => alert('Не удалось отправить отзыв'))
 }
 
-
 const selectReview = (review) => {
   selectedReview.value = review
   form.value = { ...review }
+}
+
+const clearForm = () => {
+  selectedReview.value = null
+  form.value = {
+    id: null,
+    name: '',
+    date: '',
+    phone: '',
+    email: '',
+    technologies: [],
+    rating: 0,
+    comment: ''
+  }
+  phoneError.value = false
 }
 
 const loadReviews = () => {
@@ -134,9 +108,8 @@ const loadReviews = () => {
 onMounted(loadReviews)
 </script>
 
-
 <style>
-  .invalid-phone {
-    color: red;
-  }
+.invalid-phone {
+  border: 2px solid red;
+}
 </style>
