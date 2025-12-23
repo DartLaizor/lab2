@@ -11,15 +11,12 @@
     
     <ReviewForm
       v-model="form"
-      :phone-error="phoneError"
-      @validate-phone="validatePhone"
+      :is-view-mode="!!selectedReview"
       @submit="addReview"
       @clear="clearForm"
     />
 
     <p><strong>Средний рейтинг:</strong> {{ averageRating.toFixed(2) }}</p>
-    
-    <ReviewDetail v-if="selectedReview" :review="selectedReview" />
   </div>
 </template>
 
@@ -28,13 +25,10 @@ import { ref, computed, onMounted } from 'vue'
 import ReviewForm from './components/ReviewForm.vue'
 import ReviewList from './components/ReviewList.vue'
 
-
 const reviews = ref([])
 const selectedReview = ref(null)
-const phoneError = ref(false)
 
-const form = ref({
-  id: null,
+const getInitialForm = () => ({
   name: '',
   date: '',
   phone: '',
@@ -44,35 +38,25 @@ const form = ref({
   comment: ''
 })
 
+const form = ref(getInitialForm())
+
 const averageRating = computed(() => {
-  const total = reviews.value.reduce((s, r) => s + r.rating, 0)
+  const total = reviews.value.reduce((s, r) => s + (Number(r.rating) || 0), 0)
   return reviews.value.length ? total / reviews.value.length : 0
 })
 
-const validatePhone = (phone) => {
-  if (phone === '') {
-    phoneError.value = false
-    return true
-  }
-  const valid = /^[78]\d{10}$/.test(phone.trim())
-  phoneError.value = !valid
-  return valid
-}
-
-const addReview = () => {
-  if (!validatePhone(form.value.phone)) return
-
+const addReview = (reviewData) => {
   fetch('http://localhost:8082/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(form.value)
+    body: JSON.stringify(reviewData)
   })
     .then(res => {
       if (res.ok) {
         loadReviews()
         clearForm()
       } else {
-        throw new Error('HTTP error')
+        alert('Ошибка сохранения')
       }
     })
     .catch(() => alert('Не удалось отправить отзыв'))
@@ -85,31 +69,15 @@ const selectReview = (review) => {
 
 const clearForm = () => {
   selectedReview.value = null
-  form.value = {
-    id: null,
-    name: '',
-    date: '',
-    phone: '',
-    email: '',
-    technologies: [],
-    rating: 0,
-    comment: ''
-  }
-  phoneError.value = false
+  form.value = getInitialForm()
 }
 
 const loadReviews = () => {
   fetch('http://localhost:8082/send')
     .then(res => res.json())
     .then(data => reviews.value = Array.isArray(data) ? data : [])
-    .catch(() => alert('Ошибка загрузки отзывов'))
+    .catch(() => alert('Ошибка загрузки'))
 }
 
 onMounted(loadReviews)
 </script>
-
-<style>
-.invalid-phone {
-  border: 2px solid red;
-}
-</style>
